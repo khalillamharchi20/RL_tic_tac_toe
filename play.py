@@ -97,16 +97,16 @@ def play_game(model, human_first=True):
     # Game result
     if env.winner == 1:
         if human_first:
-            print("🎉 You win! (X wins)")
+            print(" You win! (X wins)")
         else:
-            print("🤖 AI wins! (X wins)")
+            print(" AI wins! (X wins)")
     elif env.winner == -1:
         if not human_first:
-            print("🎉 You win! (O wins)")
+            print(" You win! (O wins)")
         else:
-            print("🤖 AI wins! (O wins)")
+            print(" AI wins! (O wins)")
     else:
-        print("🤝 It's a draw!")
+        print(" It's a draw!")
     
     return env.winner
 
@@ -133,9 +133,8 @@ def main():
         print(f"  Draws: {scores['draws']}")
         print("\n1. Play as X (first)")
         print("2. Play as O (second)")
-        print("3. Play 5-round tournament")
-        print("4. Reset scores")
-        print("5. Quit")
+        print("3. Reset scores")
+        print("4. Quit")
         
         choice = input("\nSelect option (1-5): ")
         
@@ -157,33 +156,12 @@ def main():
             else:
                 scores["draws"] += 1
                 
+              
         elif choice == '3':
-            print("\nStarting 5-round tournament...")
-            for round_num in range(5):
-                print(f"\n--- Round {round_num + 1} ---")
-                # Alternate who goes first
-                human_first = (round_num % 2 == 0)
-                print(f"You are playing as {'X (first)' if human_first else 'O (second)'}")
-                
-                winner = play_game(model, human_first=human_first)
-                if winner == 1:
-                    if human_first:
-                        scores["human"] += 1
-                    else:
-                        scores["ai"] += 1
-                elif winner == -1:
-                    if not human_first:
-                        scores["human"] += 1
-                    else:
-                        scores["ai"] += 1
-                else:
-                    scores["draws"] += 1
-                    
-        elif choice == '4':
             scores = {"human": 0, "ai": 0, "draws": 0}
             print("Scores reset!")
             
-        elif choice == '5':
+        elif choice == '4':
             print("\nFinal score:")
             print(f"  You: {scores['human']}")
             print(f"  AI: {scores['ai']}")
@@ -192,7 +170,7 @@ def main():
             break
             
         else:
-            print("Invalid choice. Please enter 1-5.")
+            print("Invalid choice. Please enter 1-4.")
 
 if __name__ == "__main__":
     main()
