@@ -46,6 +46,7 @@ class TicTacToeEnv:
         self.state[a] = -1  # opponent is -1
 
     def step(self, action):
+    
         if self.done:
             return self._obs(), 0.0, True, {}
 
@@ -69,6 +70,36 @@ class TicTacToeEnv:
             r = -1.0 if self.winner == -1 else 0.0
             return self._obs(), r, True, {}
 
+        return self._obs(), 0.0, False, {}
+    
+    def step_single(self, action, player):
+        
+        if self.done:
+            return self._obs(), 0.0, True, {}
+
+        # illegal move
+        if self.state[action] != 0:
+            self.done = True
+            self.winner = -player  # opponent wins if illegal move
+            reward = -1.0 if player == 1 else 1.0  # negative for agent, positive for opponent
+            return self._obs(), reward, True, {"illegal": True}
+
+        # make the move
+        self.state[action] = player
+        
+        # check game over
+        self.done, self.winner = self.check_game_over()
+        
+        # calculate reward
+        if self.done:
+            if self.winner == 1:  # X wins
+                r = 1.0
+            elif self.winner == -1:  # O wins
+                r = -1.0
+            else:  # draw
+                r = 0.0
+            return self._obs(), r, True, {}
+        
         return self._obs(), 0.0, False, {}
     
     def render(self):

@@ -5,6 +5,7 @@ Runs on a single node with Ray Core.
 """
 
 from losses import train
+import torch
 
 if __name__ == "__main__":
     model = train(
@@ -17,4 +18,5 @@ if __name__ == "__main__":
         ent_coef=0.01,
         batch_max_steps=5000
     )
+    torch.save(model.state_dict(), 'saved_models/model.pt')
     print("Training complete!")
