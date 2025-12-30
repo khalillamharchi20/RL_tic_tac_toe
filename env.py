@@ -13,7 +13,7 @@ class TicTacToeEnv:
         return self._obs()
 
     def _obs(self):
-        # observation is always from the learning agent view: agent uses +1
+        # observation is always from the learning agent view
         return np.array(self.state, dtype=np.float32)
 
     def get_available_moves(self, state=None):
