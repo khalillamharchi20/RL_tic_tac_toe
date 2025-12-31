@@ -8,18 +8,4 @@ services:
       - ./saved_models:/app/saved_models
     environment:
       - PYTHONUNBUFFERED=1
-    command: python main.py
-     
-
-  play:
-    build: .
-    container_name: tictactoe_player
-    volumes:
-      - ./saved_models:/app/saved_models
-    environment:
-      - PYTHONUNBUFFERED=1
-    stdin_open: true  
-    tty: true         
-    command: python play.py
-    depends_on:
-      - train
+    command: sh -c "python main.py && echo 'training done use docker exec -it tictactoe_trainer python play.py' && tail -f /dev/null"
