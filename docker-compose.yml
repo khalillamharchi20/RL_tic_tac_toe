@@ -1,17 +1,25 @@
 version: '3.8'
 
 services:
-  tictactoe-train:
+  train:
     build: .
-    container_name: tictactoe_a2c
+    container_name: tictactoe_trainer
     volumes:
       - ./saved_models:/app/saved_models
     environment:
       - PYTHONUNBUFFERED=1
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
+    command: python main.py
+     
+
+  play:
+    build: .
+    container_name: tictactoe_player
+    volumes:
+      - ./saved_models:/app/saved_models
+    environment:
+      - PYTHONUNBUFFERED=1
+    stdin_open: true  
+    tty: true         
+    command: python play.py
+    depends_on:
+      - train

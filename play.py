@@ -4,14 +4,12 @@ from env import TicTacToeEnv
 from model import ActorCritic, masked_softmax_logits
 
 def load_model(path='saved_models/model.pt'):
-    """Load trained model"""
     model = ActorCritic()
     model.load_state_dict(torch.load(path, map_location='cpu'))
     model.eval()
     return model
 
 def get_model_move(model, state):
-    """Get model's move for a given state"""
     obs_t = torch.tensor(state, dtype=torch.float32).unsqueeze(0)
     with torch.no_grad():
         logits, _ = model(obs_t)
@@ -21,7 +19,6 @@ def get_model_move(model, state):
     return action
 
 def human_move(state):
-    """Get human player's move"""
     while True:
         try:
             move = int(input("Enter your move (0-8, row-major): "))
@@ -36,7 +33,6 @@ def human_move(state):
             print("Please enter a valid number")
 
 def display_board(state):
-    """Display the board with position numbers"""
     symbols = {1: 'X', -1: 'O', 0: ' '}
     print("\nBoard positions:")
     print(" 0 | 1 | 2 ")
@@ -54,7 +50,6 @@ def display_board(state):
     print()
 
 def play_game(model, human_first=True):
-    """Play a game against the trained model using step_single"""
     env = TicTacToeEnv(opponent="random")
     state = env.reset()
     
@@ -111,7 +106,6 @@ def play_game(model, human_first=True):
     return env.winner
 
 def main():
-    # Load trained model
     try:
         model = load_model('saved_models/model.pt')
         print("Model loaded successfully!")

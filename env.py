@@ -13,7 +13,7 @@ class TicTacToeEnv:
         return self._obs()
 
     def _obs(self):
-        # observation is always from the learning agent view
+        
         return np.array(self.state, dtype=np.float32)
 
     def get_available_moves(self, state=None):
@@ -43,27 +43,27 @@ class TicTacToeEnv:
             a = random.choice(moves)
         else:
             a = random.choice(moves)
-        self.state[a] = -1  # opponent is -1
+        self.state[a] = -1  
 
     def step(self, action):
     
         if self.done:
             return self._obs(), 0.0, True, {}
 
-        # illegal move
+       
         if self.state[action] != 0:
             self.done = True
             self.winner = -1
             return self._obs(), -1.0, True, {"illegal": True}
 
-        # agent plays +1
+       
         self.state[action] = 1
         self.done, self.winner = self.check_game_over()
         if self.done:
             r = 1.0 if self.winner == 1 else 0.0
             return self._obs(), r, True, {}
 
-        # opponent plays -1
+        
         self._opponent_move()
         self.done, self.winner = self.check_game_over()
         if self.done:
@@ -77,26 +77,26 @@ class TicTacToeEnv:
         if self.done:
             return self._obs(), 0.0, True, {}
 
-        # illegal move
+        
         if self.state[action] != 0:
             self.done = True
-            self.winner = -player  # opponent wins if illegal move
-            reward = -1.0 if player == 1 else 1.0  # negative for agent, positive for opponent
+            self.winner = -player  
+            reward = -1.0 if player == 1 else 1.0  
             return self._obs(), reward, True, {"illegal": True}
 
-        # make the move
+       
         self.state[action] = player
         
-        # check game over
+       
         self.done, self.winner = self.check_game_over()
         
-        # calculate reward
+      
         if self.done:
-            if self.winner == 1:  # X wins
+            if self.winner == 1:  
                 r = 1.0
-            elif self.winner == -1:  # O wins
+            elif self.winner == -1:  
                 r = -1.0
-            else:  # draw
+            else:  
                 r = 0.0
             return self._obs(), r, True, {}
         
