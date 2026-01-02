@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PROJECT_DIR="${PROJECT_DIR:-$HOME/public/RL_tic_tac_toe}"
+PROJECT_DIR="${PROJECT_DIR:-$HOME/RL_tic_tac_toe}"
 
 echo "Project dir: $PROJECT_DIR"
 echo "Nodes:"

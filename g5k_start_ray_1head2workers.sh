@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PROJECT_DIR="${PROJECT_DIR:-$HOME/public/RL_tic_tac_toe}"
+PROJECT_DIR="${PROJECT_DIR:-$HOME/RL_tic_tac_toe}"
 
 # Load HEAD/W1/W2/HEAD_IP
 source ./g5k_nodes.sh
