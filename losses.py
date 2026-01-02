@@ -17,7 +17,7 @@ def compute_returns(rewards, gamma):
     return np.array(list(reversed(out)), dtype=np.float32)
 
 
-def init_ray(ray_address: str | None):
+def init_ray(ray_address):
     """
     If ray_address is provided, try to connect to an existing Ray cluster.
     If connection fails or no address provided, start local Ray.
@@ -44,7 +44,7 @@ def train(
     vf_coef=0.5,
     ent_coef=0.01,
     batch_max_steps=5000,
-    ray_address: str | None = None,
+    ray_address = None,
 ):
     
     init_ray(ray_address)
