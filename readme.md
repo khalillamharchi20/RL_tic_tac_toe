@@ -94,3 +94,19 @@ python main.py
 python play.py
 ```
 
+---
+
+## Authors & Contributions
+
+This project has been developed by:
+
+- **Achraf Khamri**
+- **Khalil Lamharchi**
+
+### Work done by Khalil Lamharchi
+- Design and implementation of the **Tic-Tac-Toe environment**
+- Creation of the **game logic and interactive play interface**
+- Implementation of **model export and saving**
+- Local training of the RL agent using **Docker**  
+  - `Dockerfile.local`
+  - `docker-compose-local.yml`
