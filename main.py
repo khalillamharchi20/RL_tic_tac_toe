@@ -7,7 +7,7 @@ def parse_args():
     p = argparse.ArgumentParser()
     p.add_argument("--ray-address", default="", help='"" for local, "auto" or "IP:6379" for cluster')
     p.add_argument("--num-workers", type=int, default=4)
-    p.add_argument("--iters", type=int, default=1000)
+    p.add_argument("--iters", type=int, default=200)
     p.add_argument("--episodes-per-worker", type=int, default=50)
     p.add_argument("--lr", type=float, default=3e-4)
     p.add_argument("--gamma", type=float, default=0.99)
@@ -22,7 +22,7 @@ if __name__ == "__main__":
 
     ray_address = args.ray_address.strip() or None
 
-    _ = train(
+    model = train(
         num_workers=args.num_workers,
         iters=args.iters,
         episodes_per_worker=args.episodes_per_worker,
