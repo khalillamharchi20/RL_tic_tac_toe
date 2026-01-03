@@ -1,7 +1,7 @@
 # Tic-Tac-Toe AI with Reinforcement Learning
 
 ## Overview
-This project implements a Reinforcement Learning (RL) agent that learns to play **Tic-Tac-Toe** using the **Advantage Actor-Critic (A2C)** algorithm.  
+This project implements a Reinforcement Learning agent that learns to play **Tic-Tac-Toe** using the **Advantage Actor-Critic (A2C)** algorithm.  
 The agent is trained through **self-play against a random opponent** and can also be played interactively by a human user.
 
 ---
@@ -9,21 +9,13 @@ The agent is trained through **self-play against a random opponent** and can als
 ## Project Structure
 
 ### Core Components
-- **env.py** – Tic-Tac-Toe game environment with an OpenAI Gym-like interface  
-- **model.py** – Actor-Critic neural network with legal-move masking  
-- **worker.py** – Ray remote workers for parallel episode collection  
-- **losses.py** – A2C loss computation and training logic  
-- **main.py** – Main training script  
-- **play.py** – Interactive interface to play against the trained AI  
+- **env.py** : Tic-Tac-Toe game environment 
+- **model.py** : Actor-Critic neural network with legal move masking  
+- **worker.py** : Ray remote workers for parallel episode collection  
+- **losses.py** : A2C loss computation and training logic  
+- **main.py** : Main training script  
+- **play.py** : Interactive interface to play against the trained AI  
 
----
-
-## Key Features
--  **A2C Algorithm** – Stable policy gradient method  
--  **Legal Move Masking** – Prevents illegal moves during training  
--  **Parallel Training** – Distributed rollout collection using Ray  
--  **Interactive Play** – Play against the trained AI  
--  **Docker Support** – Easy, reproducible containerized setup  
 
 ---
 
@@ -48,7 +40,7 @@ The agent is trained through **self-play against a random opponent** and can als
 
 ---
 
-## Example: Training Output
+## Example: Local Training Output
 
 Below is an example of running `main.py` to train the agent.  
 It shows training iterations, loss values, win rate, and rollout statistics.
@@ -61,7 +53,7 @@ It shows training iterations, loss values, win rate, and rollout statistics.
 
 ### Prerequisites
 - Docker & Docker Compose (recommended)  
-- Python 3.8+ (for local execution)  
+- Python 3.12+ (for local execution)  
 
 ---
 
@@ -69,12 +61,12 @@ It shows training iterations, loss values, win rate, and rollout statistics.
 
 ### Build and start training
 ```bash
-docker-compose -f docker-compose-local.yml up
+docker-compose -f docker-compose-local.yml up --build
 ```
 
 This will:
 - Build the Docker image  
-- Train the model (e.g. 200 iterations with 4 parallel workers)  
+- Train the model in 200 iterations with 4 parallel workers 
 - Save the trained model to `saved_models/model.pt`  
 - Keep the container running for interactive play  
 
