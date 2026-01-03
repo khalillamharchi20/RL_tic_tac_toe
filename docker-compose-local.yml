@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  train:
+    build:
+      context: .
+      dockerfile: Dockerfile.local
+    container_name: tictactoe_trainer
+    volumes:
+      - ./saved_models:/app/saved_models
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: sh -c "python main.py && echo 'training done use docker exec -it tictactoe_trainer python play.py' && tail -f /dev/null"

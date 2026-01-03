@@ -1,5 +1,6 @@
 import argparse
 from losses import train
+import torch
 
 
 def parse_args():
@@ -33,3 +34,4 @@ if __name__ == "__main__":
         ray_address=ray_address,
     )
     print("Training complete")
+    torch.save(model.state_dict(), 'saved_models/model.pt')
