@@ -1,6 +1,8 @@
 import ray
 import numpy as np
 import torch
+import os
+import socket
 from env import TicTacToeEnv
 from model import ActorCritic, masked_softmax_logits
 
@@ -16,6 +18,16 @@ class RolloutWorker:
         self.device = "cpu"
         self.model = ActorCritic().to(self.device)
         self.model.eval()
+
+        self.node_ip = ray.util.get_node_ip_address()
+        self.hostname = socket.gethostname()
+        self.pid = os.getpid()
+        self.seed = seed
+
+        print(
+            f"[worker init] seed={self.seed} host={self.hostname} ip={self.node_ip} pid={self.pid}",
+            flush=True,
+        )
 
     def set_weights(self, weights):
         self.model.load_state_dict(weights)
@@ -71,4 +83,10 @@ class RolloutWorker:
                 }
             )
 
-        return trajectories, stats
+        worker_info = {
+            "seed": self.seed,
+            "host": self.hostname,
+            "ip": self.node_ip,
+            "pid": self.pid,
+        }
+        return trajectories, stats, worker_info

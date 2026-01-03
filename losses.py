@@ -1,9 +1,7 @@
 import time
+import ray
 import torch
 import numpy as np
-import json
-from pathlib import Path
-import ray
 from model import ActorCritic, masked_softmax_logits
 from worker import RolloutWorker
 
@@ -17,7 +15,7 @@ def compute_returns(rewards, gamma):
     return np.array(list(reversed(out)), dtype=np.float32)
 
 
-def init_ray(ray_address):
+def init_ray(ray_address=None):
     """
     If ray_address is provided, try to connect to an existing Ray cluster.
     If connection fails or no address provided, start local Ray.
@@ -44,11 +42,12 @@ def train(
     vf_coef=0.5,
     ent_coef=0.01,
     batch_max_steps=5000,
-    ray_address = None,
+    ray_address=None,
 ):
-    
     init_ray(ray_address)
+
     total_start = time.perf_counter()
+
     device = "cpu"
     model = ActorCritic().to(device)
     opt = torch.optim.Adam(model.parameters(), lr=lr)
@@ -56,8 +55,8 @@ def train(
     workers = [RolloutWorker.remote(seed=i) for i in range(num_workers)]
 
     def broadcast():
-        w = model.state_dict()
-        ray.get([wk.set_weights.remote(w) for wk in workers])
+        weights = model.state_dict()
+        ray.get([wk.set_weights.remote(weights) for wk in workers])
 
     broadcast()
 
@@ -70,10 +69,19 @@ def train(
 
         trajs = []
         agg = {"wins": 0, "losses": 0, "draws": 0, "illegal": 0, "episodes": 0}
-        for t, st in results:
+        placements = []
+
+        for t, st, info in results:
             trajs += t
             for k in agg:
                 agg[k] += st[k]
+            placements.append(info)
+
+        placement_str = ", ".join(
+            f"{p['seed']}@{p['host']}({p['ip']})"
+            for p in sorted(placements, key=lambda x: x["seed"])
+        )
+        print(f"[it {it:04d}] rollout_nodes: {placement_str}")
 
         obs_list, act_list, ret_list = [], [], []
         for tr in trajs:
@@ -110,14 +118,16 @@ def train(
 
         dt = time.time() - t0
         win_rate = agg["wins"] / max(1, agg["episodes"])
+
         print(
             f"[it {it:04d}] loss={loss.item():.4f} "
             f"pi={policy_loss.item():.4f} vf={value_loss.item():.4f} ent={entropy.item():.4f} "
             f"win={win_rate:.2%} (W/D/L={agg['wins']}/{agg['draws']}/{agg['losses']}) "
             f"illegal={agg['illegal']} steps={obs.shape[0]} time={dt:.2f}s"
         )
-        
+
     total_time = time.perf_counter() - total_start
     print(f"\nTotal training time: {total_time:.2f} seconds")
+    print("Training complete")
 
     return model
