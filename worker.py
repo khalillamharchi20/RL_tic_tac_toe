@@ -1,10 +1,13 @@
 import ray
 import numpy as np
 import torch
+import os
+import socket
 from env import TicTacToeEnv
 from model import ActorCritic, masked_softmax_logits
 
-@ray.remote
+
+@ray.remote(num_cpus=1)
 class RolloutWorker:
     def __init__(self, seed=0):
         import random
@@ -16,12 +19,22 @@ class RolloutWorker:
         self.model = ActorCritic().to(self.device)
         self.model.eval()
 
+        self.node_ip = ray.util.get_node_ip_address()
+        self.hostname = socket.gethostname()
+        self.pid = os.getpid()
+        self.seed = seed
+
+        print(
+            f"[worker init] seed={self.seed} host={self.hostname} ip={self.node_ip} pid={self.pid}",
+            flush=True,
+        )
+
     def set_weights(self, weights):
         self.model.load_state_dict(weights)
 
     def run_episodes(self, n_episodes=50, gamma=0.99):
         trajectories = []
-        stats = {"wins":0, "losses":0, "draws":0, "illegal":0, "episodes":0}
+        stats = {"wins": 0, "losses": 0, "draws": 0, "illegal": 0, "episodes": 0}
 
         for _ in range(n_episodes):
             obs = self.env.reset()
@@ -52,7 +65,6 @@ class RolloutWorker:
                 if done and info.get("illegal"):
                     stats["illegal"] += 1
 
-            # outcome stats
             if self.env.winner == 1:
                 stats["wins"] += 1
             elif self.env.winner == -1:
@@ -61,13 +73,20 @@ class RolloutWorker:
                 stats["draws"] += 1
             stats["episodes"] += 1
 
-            trajectories.append({
-                "obs": np.array(ep_obs, dtype=np.float32),
-                "act": np.array(ep_act, dtype=np.int64),
-                "rew": np.array(ep_rew, dtype=np.float32),
-                "val": np.array(ep_val, dtype=np.float32),
-                "logp": np.array(ep_logp, dtype=np.float32),
-                "gamma": gamma
-            })
+            trajectories.append(
+                {
+                    "obs": np.array(ep_obs, dtype=np.float32),
+                    "act": np.array(ep_act, dtype=np.int64),
+                    "rew": np.array(ep_rew, dtype=np.float32),
+                    "val": np.array(ep_val, dtype=np.float32),
+                    "logp": np.array(ep_logp, dtype=np.float32),
+                }
+            )
 
-        return trajectories, stats
+        worker_info = {
+            "seed": self.seed,
+            "host": self.hostname,
+            "ip": self.node_ip,
+            "pid": self.pid,
+        }
+        return trajectories, stats, worker_info

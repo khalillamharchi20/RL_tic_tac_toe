@@ -1,0 +1,23 @@
+services:
+  ray-head:
+    build: .
+    container_name: ray-head
+    ports:
+      - "6379:6379"
+      - "8265:8265"
+    volumes:
+      - ./:/app
+    command: >
+      bash -lc "ray start --head --port=6379 --dashboard-host=0.0.0.0
+      && tail -f /dev/null"
+
+  ray-worker:
+    build: .
+    container_name: ray-worker
+    depends_on:
+      - ray-head
+    volumes:
+      - ./:/app
+    command: >
+      bash -lc "ray start --address=ray-head:6379
+      && tail -f /dev/null"
