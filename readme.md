@@ -19,11 +19,11 @@ The agent is trained through **self-play against a random opponent** and can als
 ---
 
 ## Key Features
-- ✅ **A2C Algorithm** – Stable policy gradient method  
-- ✅ **Legal Move Masking** – Prevents illegal moves during training  
-- ✅ **Parallel Training** – Distributed rollout collection using Ray  
-- ✅ **Interactive Play** – Play against the trained AI  
-- ✅ **Docker Support** – Easy, reproducible containerized setup  
+-  **A2C Algorithm** – Stable policy gradient method  
+-  **Legal Move Masking** – Prevents illegal moves during training  
+-  **Parallel Training** – Distributed rollout collection using Ray  
+-  **Interactive Play** – Play against the trained AI  
+-  **Docker Support** – Easy, reproducible containerized setup  
 
 ---
 
@@ -102,11 +102,3 @@ python main.py
 python play.py
 ```
 
----
-
-## Notes
-- The agent quickly converges toward optimal play  
-- Illegal moves are fully prevented by action masking  
-- Parallel rollouts significantly speed up training  
-
-Enjoy playing against your RL-powered Tic-Tac-Toe agent! 🎮🤖
