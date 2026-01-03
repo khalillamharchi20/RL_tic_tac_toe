@@ -2,7 +2,9 @@ version: '3.8'
 
 services:
   train:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.local
     container_name: tictactoe_trainer
     volumes:
       - ./saved_models:/app/saved_models

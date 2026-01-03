@@ -130,7 +130,7 @@ def main():
         print("3. Reset scores")
         print("4. Quit")
         
-        choice = input("\nSelect option (1-5): ")
+        choice = input("\nSelect option (1-4): ")
         
         if choice == '1':
             winner = play_game(model, human_first=True)
